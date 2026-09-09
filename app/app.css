@@ -2,8 +2,8 @@
 @import "./tokens.css";
 
 /*
-  Black on white — canvas and text only. Accents (navy/red/cyan/iris/yellow)
-  are for small marks, never the chrome. Single fixed theme here — no dark
+  Black on white - canvas and text only. Accents (navy/red/cyan/iris/yellow)
+  are for small marks, never the chrome. Single fixed theme here - no dark
   mode, no toggle (this project never adds the `.dark` class defined in
   tokens.css). The color tokens themselves live in ./tokens.css, shared with
   linpaul.com and oneoneone.
@@ -21,7 +21,7 @@
     --color-iris: var(--color-iris);
     --color-yellow: var(--color-yellow);
     --color-link: var(--color-link); /* = navy; `text-link` for inline links */
-    /* Shared UI/sans face — Helvetica Neue, from ./tokens.css. */
+    /* Shared UI/sans face - Helvetica Neue, from ./tokens.css. */
     --font-sans: var(--font-sans);
 }
 
@@ -46,7 +46,7 @@
     text-transform: none;
 }
 
-/* Positive letter-spacing utilities (tracking-[0.1em] … [0.2em]) — not
+/* Positive letter-spacing utilities (tracking-[0.1em] … [0.2em]) - not
    tracking-tight / -[-0.01em] on wordmarks. */
 [class*="tracking-[0."] {
     letter-spacing: normal;
@@ -90,7 +90,7 @@ main,
     border-radius: 0;
 }
 
-/* Explicit pills win — the rules above are unlayered, so they'd otherwise
+/* Explicit pills win - the rules above are unlayered, so they'd otherwise
    override Tailwind's layered `rounded-full` utility. (linpaul-style buttons.) */
 [class~="rounded-full"] {
     border-radius: 9999px;
@@ -107,7 +107,7 @@ button:focus-visible {
     outline-offset: 2px;
 }
 
-/* Thin, square scrollbars — no rounded pill, matching the hard-edged UI. */
+/* Thin, square scrollbars - no rounded pill, matching the hard-edged UI. */
 html {
     scrollbar-width: thin;
     scrollbar-color: var(--scrollbar-thumb) transparent;
@@ -140,7 +140,7 @@ html {
 }
 
 /* ---------------------------------------------------------------------------
-   Ambient feed — a field of images from the collection that crossfades in and
+   Ambient feed - a field of images from the collection that crossfades in and
    out, shown in place of the masonry grid. The swap loop in
    components/AmbientCollage.tsx adds and removes nodes; the crossfade is all
    here: a keyframe fades each image in on mount, and an opacity transition
@@ -178,7 +178,7 @@ html {
         scroll-behavior: auto !important;
     }
 
-    /* The collage is a slow opacity crossfade, not movement — keep it fading
+    /* The collage is a slow opacity crossfade, not movement - keep it fading
        so its images don't snap in and out. Higher specificity than `*` wins
        even against the !important reset. */
     .collage__img {

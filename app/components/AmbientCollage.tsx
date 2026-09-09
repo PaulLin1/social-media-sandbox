@@ -2,18 +2,20 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { blockImageSrc } from "~/arena-image";
 
 /*
-  Ambient preview mode — ported from linpaul.com's background collage
+  Ambient preview mode - ported from linpaul.com's background collage
   (app/components/RandomImages.tsx there). A full-screen field of images from
   the collection. One image is swapped per tick, so the collage turns over its
   full set roughly every SLOTS * TICK. Lifespan is derived from TICK to keep
   that balance, so TICK is the only dial worth turning here.
 
   The one structural change from the original: the image pool isn't a fixed
-  range of local files — it's fetched from the /ambient resource route, and the
+  range of local files - it's fetched from the /ambient resource route, and the
   swap loop pools over the indices of whatever blocks come back.
 
-  Rendered by the feed (app/welcome/welcome.tsx) as one of two feed views, in
-  place of the masonry grid. Fills its positioned parent.
+  Rendered full-page by routes/feeds.ambient.tsx (one of the three feed
+  experiments - see app/experiments.ts) and, scoped to one channel, by
+  channels/Channel.tsx via the masonry/ambient toggle. Fills its positioned
+  parent.
 */
 const COLS = 5;
 const ROWS = 3;
@@ -45,7 +47,7 @@ interface CollageImage {
     fx: number;
     fy: number;
     lifespan: number;
-    /** Set when the image goes on screen, never when it's built — see `show`. */
+    /** Set when the image goes on screen, never when it's built - see `show`. */
     expiresAt: number;
     /** Fading out. It still renders, but has given up its cell. */
     exiting: boolean;
@@ -84,7 +86,7 @@ function makeImage(n: number, src: string, cell: number, lifespan: number): Coll
 /**
  * Start an image's clock at the moment it goes on screen. Stamping it at build
  * time instead means a slow preload eats into the lifespan, and the image can
- * land already expired — which looks like a flash.
+ * land already expired - which looks like a flash.
  */
 function show(img: CollageImage, now: number): CollageImage {
     return { ...img, expiresAt: now + img.lifespan };

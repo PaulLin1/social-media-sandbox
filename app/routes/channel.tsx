@@ -7,8 +7,8 @@ export function meta({ loaderData }: Route.MetaArgs) {
     return [
         {
             title: loaderData?.channel
-                ? `${loaderData.channel.title} — ${SITE_NAME}`
-                : `Channel — ${SITE_NAME}`,
+                ? `${loaderData.channel.title} - ${SITE_NAME}`
+                : `Channel - ${SITE_NAME}`,
         },
     ];
 }

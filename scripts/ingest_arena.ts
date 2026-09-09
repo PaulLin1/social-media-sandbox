@@ -16,7 +16,7 @@ const db = drizzle(pool);
 
 if (!process.env.ARENA_TOKEN) {
     console.error(
-        "ARENA_TOKEN is not set — you'll be rate-limited at guest tier (30 req/min). Set it in .env.",
+        "ARENA_TOKEN is not set - you'll be rate-limited at guest tier (30 req/min). Set it in .env.",
     );
     process.exit(1);
 }
@@ -30,7 +30,7 @@ const rawClient = createClient({ token: process.env.ARENA_TOKEN });
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const THROTTLE_MS = 500; // free tier: 120/min ≈ 500ms/req; tighten if you confirm premium tier
 
-// blocks whose connections lookup failed permanently — no DB table for this,
+// blocks whose connections lookup failed permanently - no DB table for this,
 // so track in memory and flush to disk at the end for a manual re-run pass
 const failedLookups: { arenaBlockId: number; reason: any }[] = [];
 
@@ -40,7 +40,7 @@ async function verifyToken() {
     });
     if (!res.ok) {
         console.error(
-            `Token check failed (${res.status}) — confirm ARENA_TOKEN is valid.`,
+            `Token check failed (${res.status}) - confirm ARENA_TOKEN is valid.`,
         );
         process.exit(1);
     }
@@ -61,7 +61,7 @@ async function withRateLimitRetry<T>(
         if (result.error?.type === "rate_limit_exceeded") {
             const waitMs = (result.error.retry_after ?? 60) * 1000 + 1000;
             console.warn(
-                `rate limited (tier: ${result.error.tier}), waiting ${waitMs / 1000}s — attempt ${attempt + 1}/${maxRetries + 1}`,
+                `rate limited (tier: ${result.error.tier}), waiting ${waitMs / 1000}s - attempt ${attempt + 1}/${maxRetries + 1}`,
             );
             await sleep(waitMs);
             continue;
@@ -74,7 +74,7 @@ async function withRateLimitRetry<T>(
 
         return result.data as T;
     }
-    console.error("exceeded max retries on rate limit — giving up for now");
+    console.error("exceeded max retries on rate limit - giving up for now");
     return null;
 }
 
@@ -154,7 +154,7 @@ async function ingestChannel(slugOrId: string | number) {
     for (let page = await pages.next(); !page.done; page = await pages.next()) {
         await sleep(THROTTLE_MS);
         for (const item of page.value.data as any[]) {
-            if (item.base_type !== "Block") continue; // nested Channel entries — skip here, handle separately if you want them
+            if (item.base_type !== "Block") continue; // nested Channel entries - skip here, handle separately if you want them
             const blockRow = await upsertBlock(item);
             blockRows.push(blockRow);
             await db
@@ -210,7 +210,7 @@ async function main() {
 
     const seen = new Set<number>();
     const queue: string[] = [...seedSlugs];
-    const MAX_CHANNELS = 500; // trimmed from 2000 — see note on Are.na's acceptable-use terms
+    const MAX_CHANNELS = 500; // trimmed from 2000 - see note on Are.na's acceptable-use terms
 
     while (queue.length && seen.size < MAX_CHANNELS) {
         const slug = queue.shift()!;
@@ -234,7 +234,7 @@ async function main() {
             }
         } catch (err) {
             console.error(`failed on ${slug}:`, err);
-            continue; // safe to retry later — everything above is upsert-based
+            continue; // safe to retry later - everything above is upsert-based
         }
     }
 
@@ -245,7 +245,7 @@ async function main() {
             JSON.stringify(failedLookups, null, 2),
         );
         console.log(
-            `${failedLookups.length} failed lookups written to failed-lookups.json — re-run these separately later.`,
+            `${failedLookups.length} failed lookups written to failed-lookups.json - re-run these separately later.`,
         );
     }
     await pool.end();

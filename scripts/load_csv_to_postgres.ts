@@ -1,8 +1,7 @@
 // Bulk-loads the repo-root CSV exports into Postgres.
 //
 // Why this exists: `blocks` and `channels` live in Postgres with only the
-// columns ingest_arena.ts extracts at crawl time (id, arena id, title, etc) —
-// the full `data` jsonb blob was dropped from both tables to save space, and
+// columns ingest_arena.ts extracts at crawl time (id, arena id, title, etc) - // the full `data` jsonb blob was dropped from both tables to save space, and
 // blocks never had an `image_url` column at all. `connections.csv` is a
 // complete 1:1 mirror of the `connections` table already (skipped by default,
 // see --include-connections). This script backfills what's missing:
@@ -138,12 +137,12 @@ async function loadChannels() {
         console.log("channels.data: fully backfilled, column set NOT NULL");
     } else {
         console.warn(
-            `channels.data: ${nullCount} rows still NULL — leaving column nullable`,
+            `channels.data: ${nullCount} rows still NULL - leaving column nullable`,
         );
     }
 }
 
-// ---- connections.csv: already mirrors the live table 1:1 — opt-in safety net only ----
+// ---- connections.csv: already mirrors the live table 1:1 - opt-in safety net only ----
 async function loadConnections() {
     type Row = {
         id: string;
@@ -183,7 +182,7 @@ async function main() {
         await loadConnections();
     } else {
         console.log(
-            "connections.csv: skipped (already matches the live table 1:1) — pass --include-connections to force a safety-net upsert",
+            "connections.csv: skipped (already matches the live table 1:1) - pass --include-connections to force a safety-net upsert",
         );
     }
 

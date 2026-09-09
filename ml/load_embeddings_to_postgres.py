@@ -1,8 +1,8 @@
 """
-load_embeddings_to_postgres.py — reads a CSV produced by embed_to_csv.py
+load_embeddings_to_postgres.py - reads a CSV produced by embed_to_csv.py
 (block_id, space_version, embedding) and upserts it into the `block_embeddings`
 pgvector table (see app/db/schema.ts). Split out from the embedding step so the
-GPU box that runs embed_to_csv.py never needs DATABASE_URL — only wherever
+GPU box that runs embed_to_csv.py never needs DATABASE_URL - only wherever
 this script runs does (matches ml/README.md's data.export_graph split, just
 in the other direction: CSV -> Postgres instead of Postgres -> CSV).
 

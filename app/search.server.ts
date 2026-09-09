@@ -4,7 +4,7 @@ import { blocks, blockEmbeddings, connections } from "~/db/schema";
 import { posterNameSql } from "~/db/poster";
 import { embedText, toVectorLiteral } from "~/clip.server";
 
-// must match ml/load_embeddings_to_postgres.py's DEFAULT_SPACE_VERSION — a
+// must match ml/load_embeddings_to_postgres.py's DEFAULT_SPACE_VERSION - a
 // different string here would silently compare against zero rows, not an error
 export const MAGIC_SEARCH_SPACE_VERSION = "clip-vit-base-patch32_channels-ft-v5";
 
@@ -32,7 +32,7 @@ export async function magicSearch(query: string): Promise<ResultRow[]> {
     return result.rows;
 }
 
-// Plain substring match on title / connector name — the fallback when the CLIP
+// Plain substring match on title / connector name - the fallback when the CLIP
 // text encoder can't be loaded.
 export async function textSearch(query: string): Promise<ResultRow[]> {
     const pattern = `%${query}%`;

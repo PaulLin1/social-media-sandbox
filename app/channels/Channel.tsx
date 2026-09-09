@@ -2,17 +2,15 @@ import { Link } from "react-router";
 import { PostGrid } from "~/components/PostGrid";
 import { FeedSettings, useFeedView } from "~/components/FeedSettings";
 import { AmbientCollage } from "~/components/AmbientCollage";
-import { ExploreLayer, useExplore } from "~/explore/useExplore";
 import type { ChannelDetail } from "~/channels.server";
 
 export function Channel({ channel }: { channel: ChannelDetail }) {
-    const explore = useExplore();
     const [view, changeView] = useFeedView();
-    const ambient = view === "ambient" && !explore.active && channel.blocks.length > 0;
+    const ambient = view === "ambient" && channel.blocks.length > 0;
 
     const header = (
         <div
-            className={`bg-paper pb-3 pt-5 ${
+            className={`bg-paper pb-3 pt-14 sm:pt-5 ${
                 ambient ? "shrink-0" : "sticky top-14 z-10"
             }`}
         >
@@ -44,24 +42,22 @@ export function Channel({ channel }: { channel: ChannelDetail }) {
     return (
         <main
             className={
-                explore.active
-                    ? "relative h-[calc(100vh-3.5rem)] overflow-hidden"
-                    : ambient
-                      ? "fixed inset-x-0 bottom-0 top-14 flex flex-col px-5 sm:px-8"
-                      : "relative px-5 pb-16 sm:px-8"
+                ambient
+                    ? "fixed inset-x-0 bottom-0 top-14 flex flex-col px-5 sm:px-8"
+                    : "relative px-5 pb-16 sm:px-8"
             }
         >
-            {!explore.active && <FeedSettings view={view} onChange={changeView} />}
+            <FeedSettings view={view} onChange={changeView} />
 
-            {!explore.active && header}
+            {header}
 
-            <div className={explore.active || ambient ? "hidden" : ""}>
+            <div className={ambient ? "hidden" : ""}>
                 {channel.blocks.length === 0 ? (
                     <p className="py-10 text-center text-ink-soft">
                         No images in this channel.
                     </p>
                 ) : (
-                    <PostGrid blocks={channel.blocks} onExplore={explore.open} />
+                    <PostGrid blocks={channel.blocks} />
                 )}
             </div>
 
@@ -73,8 +69,6 @@ export function Channel({ channel }: { channel: ChannelDetail }) {
                     />
                 </div>
             )}
-
-            <ExploreLayer explore={explore} />
         </main>
     );
 }

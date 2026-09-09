@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router";
 import { blockImageSrc } from "~/arena-image";
 
 // Matches the old `columns-[17rem] gap-x-4` (17rem = 272px, gap-x-4 = 16px).
@@ -12,13 +13,7 @@ export type Block = {
     imageUrl?: string | null;
 };
 
-export function PostGrid({
-    blocks,
-    onExplore,
-}: {
-    blocks: Block[];
-    onExplore?: (id: number) => void;
-}) {
+export function PostGrid({ blocks }: { blocks: Block[] }) {
     const gridRef = useRef<HTMLDivElement>(null);
     const [columnCount, setColumnCount] = useState(1);
 
@@ -59,12 +54,7 @@ export function PostGrid({
             {columns.map((column, i) => (
                 <div key={i} className="flex flex-1 min-w-0 flex-col gap-4">
                     {column.map(({ block, accent }) => (
-                        <PostCard
-                            key={block.id}
-                            block={block}
-                            accent={accent}
-                            onOpen={onExplore ? () => onExplore(block.id) : undefined}
-                        />
+                        <PostCard key={block.id} block={block} accent={accent} />
                     ))}
                 </div>
             ))}
@@ -73,45 +63,37 @@ export function PostGrid({
 }
 
 // Each card takes one of the four accents (not yellow), cycling down the
-// feed — a wall of images with a rotating colored edge.
+// feed - a wall of images with a rotating colored edge.
 const CARD_ACCENTS = ["border-navy", "border-red", "border-cyan", "border-iris"];
 
 type PostCardProps = {
     block: Block;
     accent?: string;
-    onOpen?: () => void;
 };
 
-export function PostCard({ block, accent, onOpen }: PostCardProps) {
-    const img = (
-        <img
-            src={blockImageSrc(block, 400)}
-            alt={block.title ?? "untitled"}
-            loading="lazy"
-            decoding="async"
-            className="w-full border-b border-rule object-contain"
-            onError={(e) => {
-                (e.currentTarget.closest("div") as HTMLElement).style.display = "none";
-            }}
-        />
-    );
-
+export function PostCard({ block, accent }: PostCardProps) {
     return (
         <div
             className={`h-auto w-full overflow-hidden border-2 bg-paper ${accent ?? "border-rule"}`}
         >
-            {onOpen ? (
-                <button
-                    type="button"
-                    onClick={onOpen}
-                    className="block w-full cursor-pointer transition-opacity hover:opacity-80"
-                    title="Explore visually similar images"
-                >
-                    {img}
-                </button>
-            ) : (
-                img
-            )}
+            {/* Every image click lands on its own page (routes/picture.tsx),
+                not the graph - that has its own entry point now (Feeds ->
+                Dynamic Graph, or "Explore" from the picture page itself). */}
+            <Link
+                to={`/p/${block.id}`}
+                className="block w-full transition-opacity hover:opacity-80"
+            >
+                <img
+                    src={blockImageSrc(block, 400)}
+                    alt={block.title ?? "untitled"}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full border-b border-rule object-contain"
+                    onError={(e) => {
+                        (e.currentTarget.closest("div") as HTMLElement).style.display = "none";
+                    }}
+                />
+            </Link>
             <p className="p-2 text-sm text-ink-soft">{block.posterName ?? "unknown"}</p>
         </div>
     );

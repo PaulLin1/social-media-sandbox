@@ -1,19 +1,18 @@
 """
-embed_to_csv_finetuned.py — same output shape as embed_to_csv.py (block_id,
+embed_to_csv_finetuned.py - same output shape as embed_to_csv.py (block_id,
 space_version, embedding), but tailored to Silk instead of generic CLIP.
 
 v1/v2 trained the projection head on image-image pairs: two blocks in the
 same channel are a positive pair, CLIP-style, nothing else. That taught the
 head "these two blocks were curated together" but never once involved what
-the channel was actually *about* — so a text query like "drain gang" had
+the channel was actually *about* - so a text query like "drain gang" had
 nothing trained to connect it to that channel's images. Verified: v1's loss
-barely moved (image content within a channel can be wildly heterogeneous —
-photos, memes, screenshots, no shared pixel structure), and v2's anchor term
+barely moved (image content within a channel can be wildly heterogeneous - photos, memes, screenshots, no shared pixel structure), and v2's anchor term
 (kept, see anchor_loss) couldn't fix a problem that was never about drift.
 
 v3 uses the caption that was sitting right there unused: channels.csv's
 `title` (e.g. "Drain Gang - Collection Archive"). Positive pairs are now
-(channel title text, member image) — the exact same recipe CLIP itself was
+(channel title text, member image) - the exact same recipe CLIP itself was
 pretrained on, just swapping "caption" for "channel title". This directly
 teaches the model what a text query like "drain gang" should retrieve,
 instead of hoping image-image clustering happens to transfer.
@@ -24,18 +23,18 @@ reposted a dozen times in "Drain Gang") got that subtype reinforced on a
 large fraction of the steps that touched it, at the expense of the channel's
 actually-diverse content. Nothing regularized against this, and there was no
 way to even tell it was happening beyond eyeballing a 9-image grid. v4 added
-multi-image sampling, weight decay, and a held-out recall@k check — but the
+multi-image sampling, weight decay, and a held-out recall@k check - but the
 measured result was recall@50 of 8.3% on TRAIN members, with the loss flat
 from epoch ~15 to 50. That's not overfitting anymore, that's a model that
 isn't learning enough to begin with. Two real capacity problems:
 
   - only 32 channels' worth of negatives per step (--channels-per-batch) is a
-    weak, noisy contrastive signal — real CLIP-style training leans hard on
+    weak, noisy contrastive signal - real CLIP-style training leans hard on
     large in-batch negative counts. Bumped the default way up (this is free:
     it's 512-dim vector math, not image forward passes).
   - a single 512x512 linear map has to simultaneously (a) pull ~500 distinct
     channels' worth of images toward ~500 distinct points and (b) stay close
-    to its identity-initialized starting position via anchor_loss — those two
+    to its identity-initialized starting position via anchor_loss - those two
     pressures fight each other, and a plain linear map doesn't have much
     slack to satisfy both. v5 replaces it with a small residual adapter (see
     ProjectionHead): a 2-layer MLP bottleneck added on top of the identity
@@ -45,7 +44,7 @@ isn't learning enough to begin with. Two real capacity problems:
     was stuck in, so anchor_weight can also come down.
 
 CLIP stays frozen (both towers). Only a small head on the image side trains,
-and it trains directly on cached 512-dim vectors — no image forward passes
+and it trains directly on cached 512-dim vectors - no image forward passes
 after the one-time corpus embed, no GPU required, done in seconds.
 
 Usage:
@@ -71,7 +70,7 @@ ML_ROOT = Path(__file__).resolve().parent
 HEAD_CACHE = ML_ROOT / "cache" / "projection_head.pt"
 
 # v5: residual MLP head + more in-batch negatives, against underfitting (v4
-# plateaued at 8.3% train recall@50) — see module docstring. bump alongside
+# plateaued at 8.3% train recall@50) - see module docstring. bump alongside
 # the training setup below, same reason base_embeddings' name is versioned:
 # old and new vectors must never get compared as the same space
 DEFAULT_SPACE_VERSION = "clip-vit-base-patch32_channels-ft-v5"
@@ -80,7 +79,7 @@ DEFAULT_SPACE_VERSION = "clip-vit-base-patch32_channels-ft-v5"
 class ProjectionHead(nn.Module):
     """A residual bottleneck adapter, zero-initialized: output = normalize(x
     + fc2(gelu(fc1(x)))), and fc2 starts at all zeros, so this is an *exact*
-    identity function at step 0 — not merely close, the way a plain linear
+    identity function at step 0 - not merely close, the way a plain linear
     layer initialized to the identity matrix only stays close to identity
     under small gradient steps. A single linear map has to satisfy "pull ~500
     channels toward ~500 distinct points" and "don't drift from identity" as
@@ -102,7 +101,7 @@ class ProjectionHead(nn.Module):
 
 def load_channel_captions(channels_csv) -> dict[int, str]:
     """channel id -> "title. description" (title alone when there's no
-    description) — the caption CLIP's text tower embeds as this channel's
+    description) - the caption CLIP's text tower embeds as this channel's
     anchor during training."""
     df = pd.read_csv(channels_csv, usecols=["id", "title", "description"])
     captions = {}
@@ -125,7 +124,7 @@ def embed_channel_captions(captions: dict[int, str], processor, model, device) -
 
 
 def sample_batch(channel_indices, channel_text, eligible, channels_per_batch, images_per_channel, rng):
-    """--images-per-channel member images per sampled channel (not 1) — a
+    """--images-per-channel member images per sampled channel (not 1) - a
     single recurring visual subtype (a shirt photo reposted a dozen times)
     can dominate one image's worth of gradient, but not several at once,
     since the loss below averages over all of them. Every other sampled
@@ -152,7 +151,7 @@ def nt_xent_loss(image_embeds, text_embeds, temperature):
 def anchor_loss(projected, original):
     """Penalize drifting away from the block's own frozen-CLIP position.
     nt_xent alone is free to rotate the space however it likes to separate
-    channels — including directions that just happen to sit closer to
+    channels - including directions that just happen to sit closer to
     arbitrary CLIP text embeddings for no semantic reason, which is exactly
     what made magic search on the fine-tuned space return "sunset"/"y2k"/
     "moodboard" results with no relevance to the query. Both are already
@@ -162,7 +161,7 @@ def anchor_loss(projected, original):
 
 def split_train_val(channel_indices, val_fraction, min_members_to_hold_out, rng):
     """Hold out val_fraction of each channel's members from training entirely
-    — small channels (< min_members_to_hold_out) skip this and go fully into
+ - small channels (< min_members_to_hold_out) skip this and go fully into
     train, since holding out their one or two images leaves nothing to learn
     from and nothing meaningful to evaluate either."""
     train, val = {}, {}
@@ -182,7 +181,7 @@ def split_train_val(channel_indices, val_fraction, min_members_to_hold_out, rng)
 def evaluate_recall(head, E, channel_text, train_indices, val_indices, k, device):
     """The actual overfitting test: rank the whole corpus against each
     channel's title and check whether that channel's own images show up in
-    the top k — separately for images the head trained on (train) vs. images
+    the top k - separately for images the head trained on (train) vs. images
     it never saw (held-out). Train-high/held-out-low means it memorized
     specific images (or a subtype like "shirt photos") rather than learning
     what the channel is about; train and held-out tracking close together
@@ -208,7 +207,7 @@ def train_head(E, channel_to_blocks, id2idx, channel_captions, processor, model,
     }
     eligible_captioned = {c: cap for c, cap in channel_captions.items() if channel_indices.get(c)}
     if not eligible_captioned:
-        raise SystemExit("no channel has both a title and >=1 block with a cached embedding — nothing to fine-tune on")
+        raise SystemExit("no channel has both a title and >=1 block with a cached embedding - nothing to fine-tune on")
     print(f"{len(eligible_captioned)} channels usable (have a title and >=1 embedded member)")
 
     channel_text = embed_channel_captions(eligible_captioned, processor, model, device)
@@ -246,15 +245,15 @@ def train_head(E, channel_to_blocks, id2idx, channel_captions, processor, model,
         train_mean, val_mean = mean(train_recalls), mean(val_recalls)
         random_baseline = eval_k / E.shape[0]
         verdict = (
-            "looks healthy — train and held-out are close"
+            "looks healthy - train and held-out are close"
             if val_mean > train_mean * 0.5
-            else "still overfitting — memorizing specific train images rather than the channel's concept"
+            else "still overfitting - memorizing specific train images rather than the channel's concept"
             if train_mean > random_baseline * 5
-            else "underfitting — even train recall is barely above chance; needs more capacity/negatives/steps, not less overfitting"
+            else "underfitting - even train recall is barely above chance; needs more capacity/negatives/steps, not less overfitting"
         )
         print(
             f"recall@{eval_k}: train members {train_mean:.1%} vs. held-out members {val_mean:.1%} "
-            f"(random baseline ~{random_baseline:.2%}) — {verdict}"
+            f"(random baseline ~{random_baseline:.2%}) - {verdict}"
         )
 
     return head.cpu().eval()
@@ -282,13 +281,13 @@ def main():
         "--channels-per-batch",
         type=int,
         default=256,
-        help="distinct channels (= in-batch negatives) sampled per step — this is cheap (512-dim vector math, no images), so err high; v4's 32 was a weak, noisy contrastive signal",
+        help="distinct channels (= in-batch negatives) sampled per step - this is cheap (512-dim vector math, no images), so err high; v4's 32 was a weak, noisy contrastive signal",
     )
     ap.add_argument(
         "--images-per-channel",
         type=int,
         default=4,
-        help="member images sampled per channel per step — >1 so one recurring visual subtype (e.g. a reposted shirt photo) can't dominate a step's gradient",
+        help="member images sampled per channel per step - >1 so one recurring visual subtype (e.g. a reposted shirt photo) can't dominate a step's gradient",
     )
     ap.add_argument("--lr", type=float, default=1e-3)
     ap.add_argument("--weight-decay", type=float, default=1e-4, help="Adam weight decay on the projection head, against overfitting to a narrow direction")
@@ -297,7 +296,7 @@ def main():
         "--anchor-weight",
         type=float,
         default=0.2,
-        help="how strongly to penalize drifting from the original CLIP embedding — the residual head (v5) is architecturally biased toward identity already, so this can be lower than the plain-linear version needed",
+        help="how strongly to penalize drifting from the original CLIP embedding - the residual head (v5) is architecturally biased toward identity already, so this can be lower than the plain-linear version needed",
     )
     ap.add_argument(
         "--val-fraction",
@@ -340,7 +339,7 @@ def main():
     with torch.no_grad():
         fine_tuned = head(E)
 
-    print(f"embedded {len(ids)} blocks — writing to {out_path}")
+    print(f"embedded {len(ids)} blocks - writing to {out_path}")
     with open(out_path, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["block_id", "space_version", "embedding"])

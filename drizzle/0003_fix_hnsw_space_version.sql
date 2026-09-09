@@ -9,7 +9,7 @@
 -- with LIVE_SPACE_VERSION in app/db/schema.ts.
 --
 -- Apply manually (like 0001 / 0002): CONCURRENTLY can't run in a migration
--- transaction, and the build wants room — bump maintenance_work_mem for the
+-- transaction, and the build wants room - bump maintenance_work_mem for the
 -- session first if the platform allows it, e.g.:
 --   SET maintenance_work_mem = '512MB';
 DROP INDEX CONCURRENTLY IF EXISTS "block_embeddings_hnsw_idx";

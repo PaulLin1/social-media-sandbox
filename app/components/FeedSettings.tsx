@@ -38,6 +38,11 @@ export function useFeedView(): [FeedView, (v: FeedView) => void] {
     return [view, change];
 }
 
+// Same exact pill recipe as the masthead nav and FeedModeSwitch - a row of
+// separate pills, not one cramped segmented box.
+const PILL =
+    "rounded-full border border-ink px-3 py-[0.2rem] text-[length:var(--step--1)] transition-colors";
+
 /**
  * The floating Masonry|Ambient switch, top-right under the masthead. "Masonry"
  * is the scrolling image grid; "Ambient" replaces it with the crossfading
@@ -51,17 +56,17 @@ export function FeedSettings({
     onChange: (v: FeedView) => void;
 }) {
     return (
-        <div className="fixed right-4 top-[4.25rem] z-[120] flex overflow-hidden border-2 border-ink bg-paper sm:right-8">
+        <div className="fixed right-4 top-[4.25rem] z-[120] flex items-center gap-[0.35rem] sm:right-8">
             {OPTIONS.map((opt) => (
                 <button
                     key={opt.value}
                     type="button"
                     onClick={() => onChange(opt.value)}
                     aria-pressed={view === opt.value}
-                    className={`px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.15em] transition-colors ${
+                    className={`${PILL} ${
                         view === opt.value
-                            ? "bg-navy text-paper"
-                            : "text-ink-soft hover:text-ink"
+                            ? "bg-ink text-paper"
+                            : "bg-paper text-ink hover:bg-[var(--tile-hover)]"
                     }`}
                 >
                     {opt.label}

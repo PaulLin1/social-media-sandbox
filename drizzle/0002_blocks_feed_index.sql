@@ -1,5 +1,5 @@
 -- The feed (app/routes/home.tsx) and text search filter every query to
--- `type = 'Image' AND image_url IS NOT NULL` — ~104k of 121k rows — then
+-- `type = 'Image' AND image_url IS NOT NULL` - ~104k of 121k rows - then
 -- md5-sort for the random order. With no matching index that means a full
 -- seq scan of the blocks heap (~200MB, ~200ms cold) on every feed load,
 -- including each infinite-scroll page.

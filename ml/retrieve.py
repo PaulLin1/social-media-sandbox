@@ -1,5 +1,5 @@
 """
-retrieve.py — the "build now" retrieval layer, no fine-tuning, no training.
+retrieve.py - the "build now" retrieval layer, no fine-tuning, no training.
 
 One off-the-shelf CLIP embedding per block, brute-force cosine nearest-neighbor
 over it, for three query types:
@@ -10,10 +10,9 @@ over it, for three query types:
                            (centroid of its members' embeddings -> nearest
                            blocks NOT already in it)
 
-`connections.csv` (block_id, channel_id) is already the interaction graph —
-nothing to build there, channel_search() below just reads it directly. There
+`connections.csv` (block_id, channel_id) is already the interaction graph - nothing to build there, channel_search() below just reads it directly. There
 is no user tower here yet: a channel's centroid is standing in for it, which
-is the simplest possible "two-tower" — swap in a real per-user tower later
+is the simplest possible "two-tower" - swap in a real per-user tower later
 without touching this file's retrieval logic.
 
 Usage:
@@ -40,7 +39,7 @@ except ImportError:
 REPO_ROOT = Path(__file__).resolve().parent.parent
 MODEL_NAME = "openai/clip-vit-base-patch32"
 CACHE_PATH = Path(__file__).resolve().parent / "cache" / "base_embeddings.pt"
-# written by embed_to_csv_finetuned.py's train_head() — not imported from
+# written by embed_to_csv_finetuned.py's train_head() - not imported from
 # there directly, since that module imports *from* this one
 HEAD_CACHE_PATH = Path(__file__).resolve().parent / "cache" / "projection_head.pt"
 OUT_DIR = Path(__file__).resolve().parent / "retrieve_demo"
@@ -56,7 +55,7 @@ def get_device():
 
 def extract_features(output):
     """get_*_features returns a bare Tensor on transformers 4.x and a
-    BaseModelOutputWithPooling on 5.x — already projected either way."""
+    BaseModelOutputWithPooling on 5.x - already projected either way."""
     return output.pooler_output if hasattr(output, "pooler_output") else output
 
 
@@ -92,7 +91,7 @@ def embed_corpus(blocks_csv, image_dir, processor, model, device, rebuild):
         if data.get("model") == MODEL_NAME:
             print(f"loaded cached embeddings: {len(data['ids'])} blocks")
             # the cache freezes whatever image_dir had on disk the day it was
-            # built — a later image download (or a new channel entirely, like
+            # built - a later image download (or a new channel entirely, like
             # the drain-gang one that shipped with 0 embeddings for months
             # because nobody re-ran with --rebuild) silently stays invisible
             # to every script that shares this cache until someone notices.
@@ -100,7 +99,7 @@ def embed_corpus(blocks_csv, image_dir, processor, model, device, rebuild):
             if missing > 0.02 * len(blocks):
                 print(
                     f"WARNING: cache covers {len(data['ids'])}/{len(blocks)} blocks.csv rows "
-                    f"({missing} missing, {missing / len(blocks):.1%}) — if images were downloaded "
+                    f"({missing} missing, {missing / len(blocks):.1%}) - if images were downloaded "
                     f"since this cache was built, pass --rebuild to pick them up"
                 )
             return data["embeddings"], data["ids"]
@@ -109,7 +108,7 @@ def embed_corpus(blocks_csv, image_dir, processor, model, device, rebuild):
     missing = len(blocks) - len(ids)
     print(f"embedding {len(ids)} blocks with frozen CLIP (no fine-tuning)...")
     if missing:
-        print(f"WARNING: {missing}/{len(blocks)} blocks.csv rows have no local image file under {image_dir} — skipped, not an error")
+        print(f"WARNING: {missing}/{len(blocks)} blocks.csv rows have no local image file under {image_dir} - skipped, not an error")
 
     loader = DataLoader(ImageDataset(ids, image_dir, processor), batch_size=2048, num_workers=4, collate_fn=collate)
     embeds, out_ids = [], []
@@ -129,11 +128,11 @@ def embed_corpus(blocks_csv, image_dir, processor, model, device, rebuild):
 
 def apply_finetuned_head(E):
     """Reproject frozen-CLIP embeddings through the trained channel-contrastive
-    head, so --space finetuned can be tested here — offline, against a saved
-    grid image — before ever touching Postgres or the website."""
+    head, so --space finetuned can be tested here - offline, against a saved
+    grid image - before ever touching Postgres or the website."""
     if not HEAD_CACHE_PATH.exists():
         raise SystemExit(
-            f"no trained projection head at {HEAD_CACHE_PATH} — run embed_to_csv_finetuned.py first"
+            f"no trained projection head at {HEAD_CACHE_PATH} - run embed_to_csv_finetuned.py first"
         )
     ckpt = torch.load(HEAD_CACHE_PATH, weights_only=False)
     print(f"applying projection head trained for space_version={ckpt.get('space_version')!r}")
@@ -141,7 +140,7 @@ def apply_finetuned_head(E):
     if "linear.weight" in sd:
         # v2/v4 and earlier: plain linear map, no bias
         return F.normalize(E @ sd["linear.weight"].T, dim=-1)
-    # v5+: residual bottleneck adapter — mirrors ProjectionHead.forward exactly
+    # v5+: residual bottleneck adapter - mirrors ProjectionHead.forward exactly
     hidden = F.gelu(E @ sd["fc1.weight"].T + sd["fc1.bias"])
     residual = hidden @ sd["fc2.weight"].T + sd["fc2.bias"]
     return F.normalize(E + residual, dim=-1)
@@ -193,7 +192,7 @@ def channel_search(channel_id, E, ids, id2idx, channel_to_blocks, k):
 
 def save_result_grid(results, title, image_dir, out_path):
     if not HAS_PLOTTING:
-        print(f"(matplotlib not installed — skipping grid for {title!r})")
+        print(f"(matplotlib not installed - skipping grid for {title!r})")
         return
     n = len(results)
     cols = 3

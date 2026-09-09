@@ -6,7 +6,7 @@ import {
 
 // Xenova/clip-vit-base-patch32 is an ONNX port of the exact same weights as
 // openai/clip-vit-base-patch32 (used by ml/retrieve.py and
-// ml/embed_to_postgres.py) — same vector space, so text queries computed here
+// ml/embed_to_postgres.py) - same vector space, so text queries computed here
 // are directly comparable to the image embeddings stored in block_embeddings.
 const MODEL_NAME = "Xenova/clip-vit-base-patch32";
 

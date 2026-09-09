@@ -12,7 +12,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 // keep in sync with MAGIC_SEARCH_SPACE_VERSION (app/search.server.ts) and
-// SPACE_VERSION (app/explore.server.ts) — the space actually served to users.
+// SPACE_VERSION (app/explore.server.ts) - the space actually served to users.
 // This is the ONLY space_version with rows in block_embeddings; an index
 // scoped to any other string silently covers zero rows, forcing every
 // similarity query into a full-table brute-force scan.
@@ -43,15 +43,15 @@ export const blocks = pgTable(
     {
         id: serial("id").primaryKey(),
         arenaBlockId: integer("arena_block_id").unique().notNull(),
-        type: text("type"), // Image / Text / Link / Media / Attachment — from block.class
+        type: text("type"), // Image / Text / Link / Media / Attachment - from block.class
         title: text("title"),
         sourceUrl: text("source_url"),
-        imageUrl: text("image_url"), // are.na CDN asset URL, from blocks.csv — poster info comes from connections, not a per-block column
+        imageUrl: text("image_url"), // are.na CDN asset URL, from blocks.csv - poster info comes from connections, not a per-block column
         crawledAt: timestamp("crawled_at").defaultNow().notNull(),
     },
     (t) => ({
-        // The feed (routes/home.tsx) and text search both filter to
-        // `type = 'Image' AND image_url IS NOT NULL` — ~104k of 121k rows. Without
+        // The feeds (blocks.server.ts's randomBlocks) and text search both filter to
+        // `type = 'Image' AND image_url IS NOT NULL` - ~104k of 121k rows. Without
         // this, every feed load (including each infinite-scroll page) seq-scans
         // the whole blocks heap (~200MB) just to apply that filter and md5-sort.
         // A partial index covering (id, title) lets that run as an index-only
@@ -62,7 +62,7 @@ export const blocks = pgTable(
     }),
 );
 
-// one row per (block, embedding space) — additive/versioned so a re-embed never
+// one row per (block, embedding space) - additive/versioned so a re-embed never
 // requires an in-place overwrite; join to blocks for display
 export const blockEmbeddings = pgTable(
     "block_embeddings",
@@ -84,7 +84,7 @@ export const blockEmbeddings = pgTable(
         // filter down into the graph search, so with >1 space's vectors
         // living in one index, ORDER BY embedding <=> ... LIMIT k can walk
         // right past every row in the space actually being queried and
-        // return zero results — no amount of ef_search/iterative_scan tuning
+        // return zero results - no amount of ef_search/iterative_scan tuning
         // fixes that, since the *other* space's vectors can legitimately
         // dominate the global ranking for a given query. Scoping the index
         // to the one space search.tsx reads keeps ANN search correct; a
@@ -96,7 +96,7 @@ export const blockEmbeddings = pgTable(
     }),
 );
 
-// one row per (block, channel) co-occurrence — this table IS the training data
+// one row per (block, channel) co-occurrence - this table IS the training data
 export const connections = pgTable(
     "connections",
     {
@@ -120,7 +120,7 @@ export const connections = pgTable(
     }),
 );
 
-// mirror table, same shape — populated once, before any training, then frozen
+// mirror table, same shape - populated once, before any training, then frozen
 export const holdoutConnections = pgTable(
     "holdout_connections",
     {

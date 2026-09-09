@@ -1,6 +1,6 @@
 """
-embed_to_csv.py — end to end: frozen CLIP image embedding for every block,
-written to a CSV. No DB access here — matches ml/README.md's "the training
+embed_to_csv.py - end to end: frozen CLIP image embedding for every block,
+written to a CSV. No DB access here - matches ml/README.md's "the training
 box never needs database access" setup. Load the CSV into Postgres separately,
 wherever DATABASE_URL is reachable, with load_embeddings_to_postgres.py.
 
@@ -25,13 +25,13 @@ from retrieve import MODEL_NAME, embed_corpus, get_device
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ML_ROOT = Path(__file__).resolve().parent
 
-# frozen CLIP, no fine-tuning — bump this if MODEL_NAME ever changes, so old
+# frozen CLIP, no fine-tuning - bump this if MODEL_NAME ever changes, so old
 # and new vectors never get compared as if they were the same space
 DEFAULT_SPACE_VERSION = "clip-vit-base-patch32_base"
 
 
 def format_vector(vec) -> str:
-    # space-separated, not comma-separated — keeps this a plain 3-column CSV
+    # space-separated, not comma-separated - keeps this a plain 3-column CSV
     # with no embedded delimiters that need quoting. load_embeddings_to_postgres.py
     # rejoins the numbers with commas to build pgvector's '[v1,v2,...]' literal.
     return " ".join(f"{x:.7f}" for x in vec.tolist())
@@ -50,7 +50,7 @@ def main():
     ap.add_argument(
         "--out",
         default=None,
-        help="defaults to ml/artifacts/<space-version>/embeddings.csv (artifacts/ is gitignored — large and fully reproducible)",
+        help="defaults to ml/artifacts/<space-version>/embeddings.csv (artifacts/ is gitignored - large and fully reproducible)",
     )
     ap.add_argument(
         "--rebuild", action="store_true", help="recompute embeddings instead of using the cache"
@@ -71,7 +71,7 @@ def main():
     embeddings, ids = embed_corpus(
         args.blocks_csv, Path(args.image_dir), processor, model, device, args.rebuild
     )
-    print(f"embedded {len(ids)} blocks — writing to {out_path}")
+    print(f"embedded {len(ids)} blocks - writing to {out_path}")
 
     with open(out_path, "w", newline="") as f:
         writer = csv.writer(f)

@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { db } from "~/db.server";
 import type { Block } from "~/components/PostGrid";
 
-// are.na channels are the curatorial unit — a titled collection of blocks put
+// are.na channels are the curatorial unit - a titled collection of blocks put
 // together by one person. The `channels` / `connections` tables are already
 // populated; this surfaces them.
 

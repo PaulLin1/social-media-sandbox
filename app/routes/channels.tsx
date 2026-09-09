@@ -5,7 +5,7 @@ import { SITE_NAME } from "~/site";
 
 export function meta() {
     return [
-        { title: `Channels — ${SITE_NAME}` },
+        { title: `Channels - ${SITE_NAME}` },
         { name: "description", content: "Browse curated channels" },
     ];
 }

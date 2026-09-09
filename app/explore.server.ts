@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { db } from "~/db.server";
 import { blocks, blockEmbeddings } from "~/db/schema";
 
-// The one embedding space that actually has rows — keep in sync with
+// The one embedding space that actually has rows - keep in sync with
 // MAGIC_SEARCH_SPACE_VERSION (app/search.server.ts) and the partial HNSW index
 // predicate in app/db/schema.ts.
 const SPACE_VERSION = "clip-vit-base-patch32_channels-ft-v5";
@@ -18,8 +18,8 @@ export type WebNode = {
 export type Neighbourhood = { origin: WebNode; neighbours: WebNode[] };
 
 // Neighbourhoods never change (embeddings are frozen), so cache per (id, limit).
-// The explore web fans out one of these per node it expands — dozens per
-// session, mostly repeats — so this keeps the whole thing off the database.
+// The explore web fans out one of these per node it expands - dozens per
+// session, mostly repeats - so this keeps the whole thing off the database.
 const CACHE_MAX = 4000;
 const cache = new Map<string, Neighbourhood>();
 
@@ -48,7 +48,7 @@ export async function exploreNeighbours(
     limit: number,
 ): Promise<Neighbourhood | null> {
     // Fan-outs are small (≤ ~10), well under pgvector's default hnsw.ef_search
-    // of 40, so this needs no SET-in-a-transaction — one round trip.
+    // of 40, so this needs no SET-in-a-transaction - one round trip.
     limit = Math.max(1, Math.min(20, limit | 0));
     const key = `${blockId}:${limit}`;
     const cached = cacheGet(key);

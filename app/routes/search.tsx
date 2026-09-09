@@ -5,8 +5,12 @@ import { SITE_NAME } from "~/site";
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: `Search — ${SITE_NAME}` },
-        { name: "description", content: `Search ${SITE_NAME}` },
+        { title: `Search - ${SITE_NAME}` },
+        {
+            name: "description",
+            content:
+                "Describe what you're looking for in words. CLIP matches your query against every image in the collection by meaning, not tags.",
+        },
     ];
 }
 

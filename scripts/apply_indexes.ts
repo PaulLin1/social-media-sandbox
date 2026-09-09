@@ -24,7 +24,7 @@ const steps: [string, string][] = [
         `DROP INDEX CONCURRENTLY IF EXISTS block_embeddings_hnsw_idx`,
     ],
     [
-        "rebuild HNSW index on the live space_version (0003) — a few minutes",
+        "rebuild HNSW index on the live space_version (0003) - a few minutes",
         `CREATE INDEX CONCURRENTLY block_embeddings_hnsw_idx
            ON block_embeddings USING hnsw (embedding vector_cosine_ops)
            WHERE space_version = 'clip-vit-base-patch32_channels-ft-v5'`,

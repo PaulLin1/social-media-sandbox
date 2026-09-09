@@ -26,14 +26,14 @@ async function downloadImage(row: Row) {
 
   // re-running this script used to re-fetch all ~121k images from scratch
   // every time, which is exactly why partial runs (missing images, a dead
-  // network mid-run, etc.) never got backfilled — nobody could afford to
+  // network mid-run, etc.) never got backfilled - nobody could afford to
   // rerun the whole thing. Skip whatever's already on disk instead.
   try {
     await fs.access(path);
     totalAlreadyExists++;
     return;
   } catch {
-    // doesn't exist yet — fall through and fetch it
+    // doesn't exist yet - fall through and fetch it
   }
 
   try {

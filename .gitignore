@@ -9,13 +9,13 @@
 # Leftover from before this project moved from Next.js to React Router
 /.next/
 
-# Raw arena data dumps — reproducible via scripts/ingest_arena.ts,
+# Raw arena data dumps - reproducible via scripts/ingest_arena.ts,
 # and the real copy lives in Postgres once loaded.
 /blocks.csv
 /channels.csv
 /connections.csv
 /users.csv
 
-# Large embedding CSV produced by ml/embed_to_csv.py — regenerate on the
+# Large embedding CSV produced by ml/embed_to_csv.py - regenerate on the
 # GPU box, never commit; the real copy lives in Postgres once loaded.
 /ml/embeddings.csv

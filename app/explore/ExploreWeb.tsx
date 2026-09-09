@@ -29,8 +29,8 @@ type SimNode = {
     ty: number;
     parent: number | null;
     depth: number;
-    born: number; // ms — starts moving/appearing at this time
-    dead: number; // ms — culled at this time (0 = alive)
+    born: number; // ms - starts moving/appearing at this time
+    dead: number; // ms - culled at this time (0 = alive)
 };
 
 const edgeKey = (a: number, b: number) => (a < b ? `${a}-${b}` : `${b}-${a}`);
@@ -155,7 +155,7 @@ export function ExploreWeb({
                 n.y += n.vy * dt;
             }
 
-            // 2. resolve overlaps — pure position correction, and cancel the
+            // 2. resolve overlaps - pure position correction, and cancel the
             //    velocity that's driving nodes into each other, so contacts
             //    settle instead of buzzing.
             for (let pass = 0; pass < 2; pass++) {

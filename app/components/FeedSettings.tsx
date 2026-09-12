@@ -38,10 +38,10 @@ export function useFeedView(): [FeedView, (v: FeedView) => void] {
     return [view, change];
 }
 
-// Same exact pill recipe as the masthead nav and FeedModeSwitch - a row of
-// separate pills, not one cramped segmented box.
+// Same plain-text recipe as the masthead nav and FeedModeSwitch - no fill,
+// no border.
 const PILL =
-    "rounded-full border border-ink px-3 py-[0.2rem] text-[length:var(--step--1)] transition-colors";
+    "px-2 py-[0.2rem] text-[length:var(--step--1)] transition-colors";
 
 /**
  * The floating Masonry|Ambient switch, top-right under the masthead. "Masonry"
@@ -65,8 +65,8 @@ export function FeedSettings({
                     aria-pressed={view === opt.value}
                     className={`${PILL} ${
                         view === opt.value
-                            ? "bg-ink text-paper"
-                            : "bg-paper text-ink hover:bg-[var(--tile-hover)]"
+                            ? "text-link underline"
+                            : "text-ink hover:underline"
                     }`}
                 >
                     {opt.label}

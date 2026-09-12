@@ -89,7 +89,7 @@ export default function About() {
                 <img
                     src="/memex-2857432598.png"
                     alt="Illustration of Vannevar Bush's Memex, a desk-sized device for browsing associative trails between documents."
-                    className="w-full shrink-0 border-2 border-ink bg-paper sm:w-[28rem] lg:w-[34rem]"
+                    className="w-full shrink-0 sm:w-[28rem] lg:w-[34rem]"
                 />
             </div>
         </main>

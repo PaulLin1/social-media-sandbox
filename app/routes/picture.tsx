@@ -29,12 +29,12 @@ export default function Picture({ loaderData }: Route.ComponentProps) {
 
     return (
         <main className="px-5 pb-16 pt-16 sm:px-8 sm:pt-8">
-            {/* Same floating-pill-row language as FeedModeSwitch, one option:
-                the one thing not already reachable from the global nav. */}
-            <div className="fixed right-4 top-[4.25rem] z-[120] flex overflow-hidden border-2 border-ink bg-paper sm:right-8">
+            {/* Same floating-text language as FeedModeSwitch, one option: the
+                one thing not already reachable from the global nav. */}
+            <div className="fixed right-4 top-[4.25rem] z-[120] sm:right-8">
                 <Link
                     to={`/feeds/graph?start=${block.id}`}
-                    className="px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-ink-soft transition-colors hover:text-ink"
+                    className="px-2 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-ink-soft transition-colors hover:text-ink hover:underline"
                 >
                     Explore
                 </Link>
@@ -43,7 +43,7 @@ export default function Picture({ loaderData }: Route.ComponentProps) {
             <img
                 src={blockImageSrc(block, 900)}
                 alt={block.title ?? ""}
-                className="mx-auto max-h-[70vh] w-auto max-w-full border-2 border-ink bg-paper object-contain"
+                className="mx-auto max-h-[70vh] w-auto max-w-full object-contain"
                 onError={(e) => {
                     const el = e.currentTarget;
                     const fallback = `/i/${block.id}`;

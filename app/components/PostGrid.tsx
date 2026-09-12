@@ -63,7 +63,9 @@ export function PostGrid({ blocks }: { blocks: Block[] }) {
 }
 
 // Each card takes one of the four accents (not yellow), cycling down the
-// feed - a wall of images with a rotating colored edge.
+// feed - no box around the image, just a thin rule under it (the same "rule
+// under a title" mark the design system uses elsewhere), so the accent reads
+// as a mark, not a frame.
 const CARD_ACCENTS = ["border-navy", "border-red", "border-cyan", "border-iris"];
 
 type PostCardProps = {
@@ -73,9 +75,7 @@ type PostCardProps = {
 
 export function PostCard({ block, accent }: PostCardProps) {
     return (
-        <div
-            className={`h-auto w-full overflow-hidden border-2 bg-paper ${accent ?? "border-rule"}`}
-        >
+        <div className="h-auto w-full">
             {/* Every image click lands on its own page (routes/picture.tsx),
                 not the graph - that has its own entry point now (Feeds ->
                 Dynamic Graph, or "Explore" from the picture page itself). */}
@@ -88,7 +88,7 @@ export function PostCard({ block, accent }: PostCardProps) {
                     alt={block.title ?? "untitled"}
                     loading="lazy"
                     decoding="async"
-                    className="w-full border-b border-rule object-contain"
+                    className={`w-full border-b-2 object-contain ${accent ?? "border-rule"}`}
                     onError={(e) => {
                         (e.currentTarget.closest("div") as HTMLElement).style.display = "none";
                     }}

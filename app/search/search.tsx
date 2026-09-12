@@ -36,7 +36,7 @@ export function Search({ blocks, query }: { blocks: Block[]; query: string }) {
 
                     <button
                         type="submit"
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink bg-paper text-lg text-ink transition-colors hover:bg-ink hover:text-paper"
+                        className="flex h-10 w-10 shrink-0 items-center justify-center text-lg text-ink transition-colors hover:text-link"
                     >
                         ⌕
                     </button>

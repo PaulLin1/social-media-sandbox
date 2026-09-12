@@ -2,7 +2,8 @@ import { Link } from "react-router";
 import { arenaImage } from "~/arena-image";
 import type { ChannelCard } from "~/channels.server";
 
-// Rotating accent edge, matching the feed's PostCards (not yellow).
+// Rotating accent rule under the preview, matching the feed's PostCards (not
+// yellow) - a mark, not a frame around the card.
 const CARD_ACCENTS = ["border-navy", "border-red", "border-cyan", "border-iris"];
 
 export function Channels({ channels }: { channels: ChannelCard[] }) {
@@ -38,9 +39,9 @@ function ChannelCardView({
     return (
         <Link
             to={`/channels/${channel.id}`}
-            className={`group flex flex-col overflow-hidden border-2 bg-paper transition-opacity hover:opacity-90 ${accent}`}
+            className="group flex flex-col transition-opacity hover:opacity-90"
         >
-            <div className="grid aspect-[4/3] grid-cols-2 grid-rows-2 gap-px bg-rule">
+            <div className={`grid aspect-[4/3] grid-cols-2 grid-rows-2 gap-px border-b-2 bg-rule ${accent}`}>
                 {Array.from({ length: 4 }).map((_, i) => {
                     const b = channel.preview[i];
                     return b ? (

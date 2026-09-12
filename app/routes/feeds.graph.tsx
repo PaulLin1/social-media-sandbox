@@ -48,7 +48,7 @@ export default function FeedsGraph({ loaderData }: Route.ComponentProps) {
 
             <a
                 href={`/feeds/graph?seed=${Date.now()}`}
-                className="fixed bottom-4 left-1/2 z-[120] -translate-x-1/2 rounded-full border border-ink bg-paper px-4 py-1.5 text-sm text-ink transition-colors hover:bg-ink hover:text-paper"
+                className="fixed bottom-4 left-1/2 z-[120] -translate-x-1/2 px-2 py-1.5 text-sm text-ink transition-colors hover:underline"
             >
                 Shuffle
             </a>

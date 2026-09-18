@@ -1,60 +1,53 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap");
 @import "tailwindcss";
 @import "./tokens.css";
 
 /*
-  Black on white - canvas and text only. Accents (navy/red/cyan/iris/yellow)
-  are for small marks, never the chrome. Single fixed theme here - no dark
+  v4 - left sidebar nav (components/Nav.tsx) instead of a top masthead, a
+  friendly moderate-weight webfont, and four accent colors (one per primary
+  nav destination) instead of one. Still flat white cards on a light-gray
+  page, small consistent radius, no gradients, no heavy drop shadows, no
+  underline-as-active-state. Still a single fixed light theme - no dark
   mode, no toggle (this project never adds the `.dark` class defined in
-  tokens.css). The color tokens themselves live in ./tokens.css, shared with
-  linpaul.com and oneoneone.
+  tokens.css). The color tokens themselves live in ./tokens.css, kept in the
+  same shape as linpaul.com/oneoneone's own copies (previously synced from a
+  shared design-system repo).
 */
 @theme inline {
     --color-paper: var(--color-paper);
+    --color-canvas: var(--color-canvas);
     --color-ink: var(--color-ink);
     --color-ink-soft: var(--color-ink-soft);
     --color-near-black: var(--color-near-black);
     --color-rule: var(--color-rule);
     --color-wash: var(--color-wash);
     --color-navy: var(--color-navy);
-    --color-red: var(--color-red);
-    --color-cyan: var(--color-cyan);
-    --color-iris: var(--color-iris);
-    --color-yellow: var(--color-yellow);
+    --color-purple: var(--color-purple);
+    --color-amber: var(--color-amber);
+    --color-teal: var(--color-teal);
     --color-link: var(--color-link); /* = navy; `text-link` for inline links */
-    /* Shared UI/sans face - Helvetica Neue, from ./tokens.css. */
+    /* Shared UI/sans face - Plus Jakarta Sans, from ./tokens.css. */
     --font-sans: var(--font-sans);
 }
 
-/* The type law (see design-system/DESIGN.md): NO BOLD, NO ALL-CAPS. Every
-   font-weight utility collapses to the one body weight; `uppercase` becomes a
-   no-op; the letterspacing that went with the retired all-caps label look is
-   zeroed. Unlayered, so these win over Tailwind's utilities without
-   !important, and every existing className stays put. */
+/* Body copy sits at the normal weight; headings/labels get one step up
+   (semibold), nothing heavier - every weight utility caps out there, so a
+   stray font-bold/font-black class can't reintroduce heavy type. */
 @theme {
     --font-weight-thin: var(--font-weight-body);
     --font-weight-extralight: var(--font-weight-body);
     --font-weight-light: var(--font-weight-body);
     --font-weight-normal: var(--font-weight-body);
-    --font-weight-medium: var(--font-weight-body);
-    --font-weight-semibold: var(--font-weight-body);
-    --font-weight-bold: var(--font-weight-body);
-    --font-weight-extrabold: var(--font-weight-body);
-    --font-weight-black: var(--font-weight-body);
-}
-
-.uppercase {
-    text-transform: none;
-}
-
-/* Positive letter-spacing utilities (tracking-[0.1em] … [0.2em]) - not
-   tracking-tight / -[-0.01em] on wordmarks. */
-[class*="tracking-[0."] {
-    letter-spacing: normal;
+    --font-weight-medium: 500;
+    --font-weight-semibold: var(--font-weight-display);
+    --font-weight-bold: var(--font-weight-display);
+    --font-weight-extrabold: var(--font-weight-display);
+    --font-weight-black: var(--font-weight-display);
 }
 
 html,
 body {
-    background: var(--color-paper);
+    background: var(--color-canvas);
     color: var(--color-ink);
 }
 
@@ -62,52 +55,47 @@ body {
     font-family: var(--font-sans);
     font-weight: var(--font-weight-body);
     color-scheme: light;
+    min-height: 100vh;
 }
 
-/* Soft corners, family-wide (linpaul.com does the same). Applied broadly here
-   so components pick it up without a `rounded-*` class on each one: buttons,
-   fields, bordered cards, the solid-fill marks and images. Unlayered, so it
-   wins over Tailwind's utilities. */
+/* Small, consistent corners - cards, buttons, fields all pick up the shared
+   --radius. Unlayered, so it wins over Tailwind's utilities without needing
+   a class on each one. */
 button,
 input,
 textarea,
 select,
 [class~="border"],
-[class~="border-2"],
-[class*="bg-cyan"],
-[class*="bg-red"],
-[class*="bg-iris"] {
+[class~="border-2"] {
     border-radius: var(--radius);
 }
 
-/* Full-bleed surfaces, and the small decorative marks, keep hard corners. */
+/* Full-bleed surfaces stay square - the page frame itself, not the content
+   sitting on it. */
 body,
 header,
 main,
-.collage__img,
-[class~="bg-navy"],
-[class~="bg-link"] {
+.collage__img {
     border-radius: 0;
 }
 
-/* Explicit pills win - the rules above are unlayered, so they'd otherwise
-   override Tailwind's layered `rounded-full` utility. (linpaul-style buttons.) */
+/* Explicit pills win - fully round avatars/dots. */
 [class~="rounded-full"] {
     border-radius: 9999px;
 }
 
 ::selection {
-    background: var(--color-yellow);
-    color: #000000;
+    background: var(--color-selection);
+    color: var(--color-ink);
 }
 
 a:focus-visible,
 button:focus-visible {
-    outline: 2px solid var(--color-ink);
+    outline: 2px solid var(--color-navy);
     outline-offset: 2px;
 }
 
-/* Thin, square scrollbars - no rounded pill, matching the hard-edged UI. */
+/* Thin, square scrollbars. */
 html {
     scrollbar-width: thin;
     scrollbar-color: var(--scrollbar-thumb) transparent;
@@ -137,6 +125,78 @@ html {
     to {
         opacity: 1;
     }
+}
+
+/* ---------------------------------------------------------------------------
+   Accent-card: a hard-edged arc (no feathered fade) in the card's tag color
+   (set via the `--accent` custom property by PostGrid.tsx / Channels.tsx),
+   masked down to a thin ring so it traces the border rather than filling
+   the card. `--arc-width` is how much of the circle is lit - it has to be
+   set per-card, not a single fixed angle here, because every card shares
+   the same column width but each has a different height driven by its own
+   image, and the angle a top edge subtends from a conic-gradient's center
+   depends on both: a fixed angle undershoots tall cards (gap at the
+   corners) and overshoots short ones (wraps onto the sides, past either
+   corner). useAccentSnake.ts measures the real element and sets the exact
+   angle via a plain (unregistered, inheriting) custom property on the card
+   itself, which this pseudo picks up through ordinary inheritance - the
+   `90deg` here is only a same-element fallback for the instant before that
+   JS runs.
+
+   Position is driven by `--rotate`, set on the real card element (not this
+   pseudo) every frame by useAccentSnake.ts while hovered/focused - not a
+   CSS `animation`. A CSS animation removed on mouse-leave snaps `--rotate`
+   straight to its resting value instead of transitioning, verified across
+   two different implementations of this effect (an `offset-path` version
+   before this one hit the same wall), so a smooth counterclockwise return
+   isn't reachable through CSS alone here. `@property` with `inherits: true`
+   is what lets a plain property mutation on the card flow down into this
+   pseudo's own `--rotate`, where the `transition` below - an ordinary
+   transition on an ordinary value change, not an animation handoff -
+   reliably animates it back to 0deg once the JS loop stops.
+--------------------------------------------------------------------------- */
+@property --rotate {
+    syntax: "<angle>";
+    inherits: true;
+    initial-value: 0deg;
+}
+
+.accent-card {
+    position: relative;
+    isolation: isolate;
+}
+
+.accent-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 3px;
+    background: conic-gradient(
+        from calc(var(--rotate) - (var(--arc-width, 90deg) / 2)),
+        var(--accent, var(--color-navy)) 0deg,
+        var(--accent, var(--color-navy)) var(--arc-width, 90deg),
+        transparent var(--arc-width, 90deg),
+        transparent 360deg
+    );
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    transition: --rotate 1.2s ease;
+}
+
+/* While hovered/focused, useAccentSnake.ts sets --rotate every animation
+   frame - a transition here would make each of those rapid updates chase a
+   lagging interpolated target instead of tracking the real angle, so it's
+   switched off for exactly that window and re-enabled the instant hover/
+   focus ends, which is what makes the return-to-rest step above animate. */
+.accent-card:hover::after,
+.accent-card:focus-visible::after {
+    transition: none;
 }
 
 /* ---------------------------------------------------------------------------
@@ -184,5 +244,15 @@ html {
     .collage__img {
         animation-duration: var(--collage-fade, 2s) !important;
         transition-duration: var(--collage-fade, 2s) !important;
+    }
+
+    /* Explicit request: the border snake ignores reduced-motion rather than
+       following it like everything else here. The snake itself is JS-driven
+       (useAccentSnake.ts) and never touches animation/transition-duration,
+       so it already ignores this setting on its own - the only piece the
+       universal reset above still reaches is the return-to-rest step's
+       transition-duration, which this pins back to the base rule's 1.2s. */
+    .accent-card::after {
+        transition-duration: 1.2s !important;
     }
 }

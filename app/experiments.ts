@@ -2,7 +2,7 @@
 // and locates each mode. Adding a new experiment later is: one new route/page
 // + one new entry here.
 
-export type ExperimentSlug = "masonry" | "ambient" | "graph";
+export type ExperimentSlug = "masonry" | "ambient";
 
 export type Experiment = {
     slug: ExperimentSlug;
@@ -31,14 +31,6 @@ export const EXPERIMENTS: Experiment[] = [
         tagline: "The collection as a slow crossfade.",
         blurb:
             "Images swap in and out every second, each one held on screen for 15 seconds with animated fading.",
-    },
-    {
-        slug: "graph",
-        name: "Dynamic Graph",
-        path: "/feeds/graph",
-        tagline: "Browse by visual similarity, not time.",
-        blurb:
-            "A graph view of content inspired by t-SNE graphs. Click into one and the graph expands through its nearest visual neighbors from CLIP embeddings.",
     },
 ];
 

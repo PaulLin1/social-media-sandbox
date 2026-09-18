@@ -8,6 +8,10 @@
 
 # Leftover from before this project moved from Next.js to React Router
 /.next/
+/next-env.d.ts
+
+# TS incremental build cache
+*.tsbuildinfo
 
 # Raw arena data dumps - reproducible via scripts/ingest_arena.ts,
 # and the real copy lives in Postgres once loaded.

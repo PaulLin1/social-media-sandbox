@@ -1,109 +1,108 @@
 /* =============================================================================
-   DESIGN TOKENS — SINGLE SOURCE OF TRUTH
+   DESIGN TOKENS
 
-   Canonical file: design-system/tokens.css
-   The copies inside each project (linpaul.com/styles/, oneoneone/app/,
-   social-media-sandbox/app/) are GENERATED. Do not edit them.
+   social-media-sandbox's own copy of its design tokens: color, type scale,
+   radius, focus ring. Previously synced from a shared design-system repo
+   across linpaul.com/oneoneone/social-media-sandbox; that repo is gone, so
+   this file is now local and can be edited directly.
 
-   To change the system: edit THIS file, then run design-system/sync.sh,
-   then commit each project repo separately.
-
-   See design-system/DESIGN.md for what the tokens mean and how they're used.
+   v4 — left sidebar nav + a bit more color/character. v3's plain-system-font,
+   single-accent take read as flat/barren once laid out. This version: a
+   left sidebar (mobile: bottom tab bar) instead of a top masthead + floating
+   per-page switches, a friendlier webfont at moderate weights (nothing past
+   semibold - "less bold" was explicit feedback), and four accent colors
+   (one per primary nav destination, plus reused for small identifying marks
+   like avatar initials) instead of just one. Still no gradients, no heavy
+   drop shadows, no underline-as-active-state.
 ============================================================================= */
 
 :root {
-  /* --- The system is black on white ------------------------------------------
-     Canvas + text are ONLY paper / ink / a neutral gray. No color in the
-     chrome. The paper↔ink pair is the only thing that flips in dark mode. */
+  /* --- Canvas + ink ------------------------------------------------------
+     Canvas and paper are both plain white - an off-white/gray canvas read as
+     drab and muddy in review, and this app leans on the accent palette
+     instead for separation: a hard border-r/border-b divider between the nav
+     and the page (components/Nav.tsx), and bright, solid accent color on
+     every card (see ~/accent.ts) rather than a background-tint difference. */
   --color-paper: #ffffff;
-  --color-ink: #000000;
-  --color-ink-soft: #6f6f6f; /* secondary text — neutral gray, not a hue */
+  --color-canvas: #ffffff;
+  --color-ink: #262626;
+  --color-ink-soft: #8e8e8e; /* secondary text/icons - neutral gray */
   --color-near-black: #171717;
-  --color-rule: rgba(0, 0, 0, 0.14); /* hairlines, borders */
-  --color-wash: rgba(0, 0, 0, 0.05); /* faint hover / selected fill */
-  --scrollbar-thumb: rgba(0, 0, 0, 0.28);
-  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.5);
+  --color-rule: rgba(0, 0, 0, 0.12); /* hairlines, borders */
+  --color-wash: rgba(0, 0, 0, 0.04); /* faint hover / selected fill */
+  --scrollbar-thumb: rgba(0, 0, 0, 0.25);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.45);
 
-  /* --- Accents --------------------------------------------------------------
-     Five. Used sparingly, and only on SMALL marks — category badges, status
-     dots, a rule under a title, links, error text, an identifying avatar.
-     NEVER on structural chrome (masthead, footer, page frame, primary
-     buttons): those are black on white, no exceptions. Fixed identity — they
-     do not flip in dark mode. */
-  --color-navy: #25408f; /* rgb(37 64 143)  */
-  --color-red: #d3222a; /* rgb(211 34 42)  */
-  --color-cyan: #00aeed; /* rgb(0 174 237)  */
-  --color-iris: #4756a5; /* rgb(71 86 165)  */
-  --color-yellow: #fef200; /* rgb(254 242 0) — the RAREST accent: ::selection
-                              and almost nothing else. Never a fill. */
-
-  /* Navy is the default working accent — every link, every "rule under a
-     title", selected controls. red / cyan / iris are for SETS (categories,
-     rotating borders, status dots). */
+  /* --- Accent -------------------------------------------------------------
+     Four accents, each tied to one primary nav destination (Feeds/Search/
+     Channels/About) and reused wherever that section needs a small
+     identifying mark (e.g. an avatar-initial fill). navy stays the one used
+     for inline links, same as before. Fixed identity - do not flip in dark
+     mode. Rose is a fifth, added for ~/accent.ts's block-type tagging (Image/
+     Link/Embed/Attachment/Text) - it doesn't map to a nav destination, it's
+     just the one hue left once the other four are spoken for. */
+  --color-navy: #0095f6; /* Feeds + every inline link */
+  --color-purple: #7c5cff; /* Search */
+  --color-amber: #f0932b; /* Channels */
+  --color-teal: #14b8a6; /* About */
+  --color-rose: #ff4d6d; /* block-type tag: Text */
   --color-link: var(--color-navy);
+  --color-selection: rgba(0, 149, 246, 0.22); /* ::selection tint */
 
   /* --- Non-color primitives ------------------------------------------------ */
-  --radius: 0; /* square, family-wide — no boxes, no chips */
-  --radius-pill: 999px; /* reserved for literal circles (a dot, an avatar) —
-                            nothing is pill-shaped chrome anymore */
-  --font-sans: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --radius: 0.5rem; /* small, consistent corner - cards, buttons, fields */
+  --radius-pill: 999px; /* reserved for literal circles (avatars, dots) */
+  /* A webfont again, but a friendly, moderate-weight one - not the loud
+     variable-weight Inter from the first pass. Only three weights are
+     loaded (400/500/600) so nothing in the app can accidentally go bolder
+     than semibold even via a stray font-bold class. */
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-  /* Light Helvetica — like the original linpaul.com, and about as close to
-     "Neue Helvetica World 45 Light" as you get without licensing it. On macOS
-     this renders Helvetica Neue Light; Windows has no Helvetica Neue and falls
-     back to Arial (regular). Nothing heavier anywhere — the type law. */
-  --font-weight-body: 300;
-  --focus-ring: 2px solid var(--color-ink);
+  --font-weight-body: 400;
+  --font-weight-display: 600; /* headings, current-page nav item - the ceiling */
+  --focus-ring: 2px solid var(--color-navy);
 
-  /* Fluid type scale — originated in linpaul.com, now the shared reference for
-     any UI text sized off it (the masthead nav in particular: wordmark at
-     --step-1, nav pills at --step--1). Every clamp() interpolates between a
-     ~360px phone and a ~1440px desktop, so nothing snaps at a breakpoint. */
+  /* Fluid type scale - unchanged shape (still clamp()'d phone→desktop); the
+     masthead nav keys off --step-1 / --step--1. */
   --step--1: clamp(0.78rem, 0.74rem + 0.18vw, 0.88rem);
   --step-0: clamp(0.94rem, 0.90rem + 0.20vw, 1.05rem);
   --step-1: clamp(1.08rem, 0.98rem + 0.45vw, 1.35rem);
   --step-2: clamp(1.40rem, 1.12rem + 1.20vw, 2.10rem);
 
-  /* Solid hover fill — used where a background wash is still wanted (not on
-     linpaul.com's own nav/tiles anymore, which use underline instead). */
+  /* Solid hover fill - used where a background wash is still wanted. */
   --tile-hover: #f0f0f0;
 
   /* The page canvas. Kept as its own token (rather than just --color-paper)
      since it's the one thing a themed surface might ever override. */
-  --surface-base: var(--color-paper);
+  --surface-base: var(--color-canvas);
 }
 
-/* Dark mode: paper↔ink invert, chrome grays track. Accents do NOT change.
+/* Dark mode: paper↔ink invert, chrome grays track. Accent does NOT change.
    Opt in per project by putting `.dark` on <html> (oneoneone does; linpaul.com
    and social-media-sandbox are light-only and simply never add the class). */
 .dark {
   --color-paper: var(--color-near-black);
+  --color-canvas: #000000;
   --color-ink: #f4f4f4;
   --color-ink-soft: #9a9a9a;
-  --color-rule: rgba(255, 255, 255, 0.16);
-  --color-wash: rgba(255, 255, 255, 0.07);
+  --color-rule: rgba(255, 255, 255, 0.14);
+  --color-wash: rgba(255, 255, 255, 0.06);
   --scrollbar-thumb: rgba(255, 255, 255, 0.3);
   --scrollbar-thumb-hover: rgba(255, 255, 255, 0.5);
-  /* The five accents are fixed — but navy is too dark to read on the dark
-     canvas, so the link/mark accent (only) lightens. Still navy in character. */
-  --color-link: #6b8fd6;
-  --tile-hover: #2c2c2c;
+  /* Blue is a touch dark on a dark canvas, so it lightens slightly. */
+  --color-link: #4db5ff;
+  --tile-hover: #262626;
 }
 
 /* -----------------------------------------------------------------------------
-   Shared base — the type law: NO BOLD and NO ALL-CAPS, anywhere, on any site.
-
-   Everything sits at --font-weight-body. Headings, table headers and rich-text
-   <strong>/<b> (markdown, the typography plugin) are pinned back to it here.
-   Unlayered on purpose, so this also overrides Tailwind's own base styles.
-   Tailwind's font-* weight utilities and its `uppercase` utility are
-   neutralised separately inside each Tailwind project's stylesheet — they
-   can't be reached from a plain CSS file.
+   Shared base - headings sit at a moderate semibold, not the old thin-only
+   or heavy-black extremes. No forced letter-spacing, no all-caps.
 -------------------------------------------------------------------------------- */
-:is(h1, h2, h3, h4, h5, h6, th, strong, b) {
-  font-weight: var(--font-weight-body);
+:is(h1, h2, h3, h4, h5, h6) {
+  font-weight: var(--font-weight-display);
 }
 
-:is(h1, h2, h3, h4, h5, h6) {
-  text-transform: none;
+:is(th, strong, b) {
+  font-weight: 600;
 }

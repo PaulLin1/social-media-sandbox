@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { db } from "~/db.server";
+import { normalizeBlockType } from "~/accent";
 import type { Block } from "~/components/PostGrid";
 
 // are.na channels are the curatorial unit - a titled collection of blocks put
@@ -57,7 +58,6 @@ export async function listChannels(): Promise<ChannelCard[]> {
                 FROM connections c
                 JOIN blocks b ON b.id = c.block_id
                 WHERE c.channel_id = ch.id
-                  AND b.type = 'Image'
                   AND b.image_url IS NOT NULL
                 LIMIT 4
             ) x
@@ -97,19 +97,22 @@ export async function getChannel(id: number): Promise<ChannelDetail | null> {
 
     const blocksRes = await db.execute<{
         id: number;
+        type: string | null;
         title: string | null;
         image_url: string | null;
         poster_name: string | null;
     }>(sql`
         SELECT b.id,
+               b.type,
                b.title,
                b.image_url,
                (c.data->'connection'->'connected_by'->>'name') AS poster_name
         FROM connections c
         JOIN blocks b ON b.id = c.block_id
         WHERE c.channel_id = ${id}
-          AND b.type = 'Image'
-          AND b.image_url IS NOT NULL
+          AND b.type != 'PendingBlock'
+          AND (b.image_url IS NOT NULL OR b.type = 'Text')
+          AND octet_length(b.title) <= 2000
         ORDER BY c.id DESC
         LIMIT 120
     `);
@@ -122,6 +125,7 @@ export async function getChannel(id: number): Promise<ChannelDetail | null> {
         curator: m.curator,
         blocks: blocksRes.rows.map((b) => ({
             id: Number(b.id),
+            type: normalizeBlockType(b.type),
             title: b.title,
             imageUrl: b.image_url,
             posterName: b.poster_name,

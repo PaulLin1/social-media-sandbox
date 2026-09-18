@@ -1,12 +1,12 @@
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import type { Route } from "./+types/picture";
 import { getBlock } from "~/blocks.server";
 import { blockImageSrc } from "~/arena-image";
 import { SITE_NAME } from "~/site";
 
 // Where every image click lands (see PostGrid.tsx) - one block's own page,
-// not the graph. From here, "Explore" jumps into the dynamic-graph feed
-// rooted on this specific image (routes/feeds.graph.tsx's ?start= param).
+// not the graph (the dynamic graph now lives inside Search instead of
+// having its own per-image entry point here).
 export async function loader({ params }: Route.LoaderArgs) {
     const id = Number(params.id);
     if (!Number.isInteger(id) || id <= 0) {
@@ -26,19 +26,17 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Picture({ loaderData }: Route.ComponentProps) {
     const { block } = loaderData;
+    const navigate = useNavigate();
 
     return (
-        <main className="px-5 pb-16 pt-16 sm:px-8 sm:pt-8">
-            {/* Same floating-text language as FeedModeSwitch, one option: the
-                one thing not already reachable from the global nav. */}
-            <div className="fixed right-4 top-[4.25rem] z-[120] sm:right-8">
-                <Link
-                    to={`/feeds/graph?start=${block.id}`}
-                    className="px-2 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-ink-soft transition-colors hover:text-ink hover:underline"
-                >
-                    Explore
-                </Link>
-            </div>
+        <main className="px-5 pb-16 pt-6 sm:px-8 sm:pt-8">
+            <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="mb-4 text-xs text-ink-soft transition-opacity hover:opacity-60"
+            >
+                ← Back
+            </button>
 
             <img
                 src={blockImageSrc(block, 900)}

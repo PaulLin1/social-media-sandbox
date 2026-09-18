@@ -18,12 +18,9 @@ export default function FeedsAmbient() {
     const navigate = useNavigate();
 
     return (
-        <main className="fixed inset-x-0 bottom-0 top-14 flex flex-col px-5 sm:px-8">
-            <FeedModeSwitch active="ambient" />
-
-            <div className="max-w-md shrink-0 pb-3 pt-14 sm:pt-5">
-                <h1 className="text-lg text-ink">{experiment.name}</h1>
-                <p className="mt-1 text-sm text-ink-soft">{experiment.blurb}</p>
+        <main className="fixed inset-x-0 bottom-16 top-0 flex flex-col px-5 sm:inset-x-auto sm:bottom-0 sm:left-60 sm:right-0 sm:px-8">
+            <div className="flex shrink-0 justify-end pb-4 pt-6 sm:pt-8">
+                <FeedModeSwitch active="ambient" />
             </div>
 
             <div className="relative -mx-5 flex-1 sm:-mx-8">

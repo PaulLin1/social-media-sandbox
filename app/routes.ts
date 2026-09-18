@@ -2,11 +2,11 @@ import { type RouteConfig, index, route } from "@react-router/dev/routes";
 
 export default [
     // Masonry is home - no hub/landing page in between. Switching to Ambient
-    // or Dynamic Graph happens via FeedModeSwitch, present on all three
-    // feed pages; a separate page just to pick one was redundant with it.
+    // happens via FeedModeSwitch, present on both feed pages; a separate page
+    // just to pick one was redundant with it. Dynamic Graph now lives inside
+    // Search instead of as its own feed (search/search.tsx).
     index("routes/feeds.masonry.tsx"),
     route("feeds/ambient", "routes/feeds.ambient.tsx"),
-    route("feeds/graph", "routes/feeds.graph.tsx"),
     route("i/:id", "routes/image.tsx"),
     route("p/:id", "routes/picture.tsx"),
     route("search", "routes/search.tsx"),

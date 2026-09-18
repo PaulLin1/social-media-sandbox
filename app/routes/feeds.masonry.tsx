@@ -59,7 +59,15 @@ export default function FeedsMasonry({ loaderData }: Route.ComponentProps) {
                     );
                 }
             },
-            { rootMargin: "1000px" },
+            // Generous on purpose: a fast flick-scroll can cover several
+            // thousand px before the network round-trip for the next page
+            // (100 rows, a real query, a serverless Postgres pooler) comes
+            // back. 1000px used to mean the fetch often didn't start until
+            // you were already close to the loaded edge, so a fast scroll
+            // could reach the true end of the DOM before new rows arrived,
+            // which read as the feed "slowing down." Triggering much
+            // earlier gives that round-trip room to finish unnoticed.
+            { rootMargin: "4000px" },
         );
 
         observer.observe(sentinel);
@@ -68,15 +76,15 @@ export default function FeedsMasonry({ loaderData }: Route.ComponentProps) {
 
     return (
         <main className="relative px-5 pb-16 sm:px-8">
-            <FeedModeSwitch active="masonry" />
-
-            <div className="max-w-md pb-3 pt-14 sm:pt-5">
-                <h1 className="text-lg text-ink">{experiment.name}</h1>
-                <p className="mt-1 text-sm text-ink-soft">{experiment.blurb}</p>
+            <div className="sticky top-0 z-10 flex justify-end pb-4 pt-6 sm:pt-8">
+                <FeedModeSwitch active="masonry" />
             </div>
 
             <PostGrid blocks={blocks} />
             <div ref={sentinelRef} className="h-1 w-full" />
+            {fetcher.state !== "idle" && (
+                <p className="py-8 text-center text-sm text-ink-soft">Loading more…</p>
+            )}
         </main>
     );
 }

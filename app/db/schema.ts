@@ -50,15 +50,23 @@ export const blocks = pgTable(
         crawledAt: timestamp("crawled_at").defaultNow().notNull(),
     },
     (t) => ({
-        // The feeds (blocks.server.ts's randomBlocks) and text search both filter to
-        // `type = 'Image' AND image_url IS NOT NULL` - ~104k of 121k rows. Without
-        // this, every feed load (including each infinite-scroll page) seq-scans
-        // the whole blocks heap (~200MB) just to apply that filter and md5-sort.
-        // A partial index covering (id, title) lets that run as an index-only
-        // scan over ~3MB instead. Keep the predicate in sync with the queries.
+        // The feeds (blocks.server.ts's randomBlocks) and channel queries filter
+        // to "real" blocks - anything but 'PendingBlock' (an incomplete crawl
+        // placeholder, ~12 rows) that either has a thumbnail or is a Text block
+        // (which never has one). That's effectively the whole table, but still
+        // worth a dedicated index: without it, every feed load (including each
+        // infinite-scroll page) seq-scans the whole blocks heap (~200MB) just to
+        // apply the filter and md5-sort. A partial index covering (id, title)
+        // lets that run as an index-only scan instead. The title-length cap
+        // excludes a handful of Link blocks with garbage multi-KB titles (one is
+        // 120KB) that would otherwise blow Postgres's ~8KB single-index-row
+        // limit and make the index un-buildable - those never had a usable
+        // title to show anyway. Keep the predicate in sync with the queries.
         feedIdx: index("blocks_feed_idx")
             .on(t.id, t.title)
-            .where(sql`${t.type} = 'Image' AND ${t.imageUrl} IS NOT NULL`),
+            .where(
+                sql`${t.type} != 'PendingBlock' AND (${t.imageUrl} IS NOT NULL OR ${t.type} = 'Text') AND octet_length(${t.title}) <= 2000`,
+            ),
     }),
 );
 

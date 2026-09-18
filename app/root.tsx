@@ -8,7 +8,7 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import { Masthead } from "./components/Masthead";
+import { Nav } from "./components/Nav";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [];
@@ -22,13 +22,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     name="viewport"
                     content="width=device-width, initial-scale=1"
                 />
-                <meta name="theme-color" content="#f1eb2b" />
+                <meta name="theme-color" content="#ffffff" />
                 <Meta />
                 <Links />
             </head>
             <body>
-                <Masthead />
-                {children}
+                <Nav />
+                <div className="pb-16 sm:pb-0 sm:pl-60">{children}</div>
                 <ScrollRestoration />
                 <Scripts />
             </body>

@@ -19,7 +19,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { eq } from "drizzle-orm";
 import pg from "pg";
 import "dotenv/config";
-import { blocks, channels, connections, users } from "~/db/schema";
+import { channels, connections, users } from "~/db/schema";
 
 const REPO_ROOT = new URL("..", import.meta.url).pathname;
 const INCLUDE_CONNECTIONS = process.argv.includes("--include-connections");

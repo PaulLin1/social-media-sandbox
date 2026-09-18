@@ -283,7 +283,7 @@ export function AmbientCollage({
     }, [seeded, commit, freeNumber, srcOf]);
 
     return (
-        <div className="absolute inset-0 overflow-hidden bg-paper">
+        <div className="absolute inset-0 overflow-hidden bg-canvas">
             {seeded && (
                 <div
                     aria-hidden

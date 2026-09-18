@@ -602,14 +602,6 @@ export function ExploreWeb({
             style={{ cursor: "grab" }}
         >
             <div
-                className="pointer-events-none absolute inset-0"
-                style={{
-                    background:
-                        "radial-gradient(circle at 50% 40%, transparent 0%, color-mix(in srgb, var(--color-ink) 6%, transparent) 100%)",
-                }}
-            />
-
-            <div
                 ref={worldRef}
                 className="absolute left-0 top-0 h-0 w-0"
                 style={{ opacity: 0, transition: "opacity 220ms ease" }}
@@ -652,7 +644,7 @@ export function ExploreWeb({
                             }
                             className={`group absolute left-0 top-0 block overflow-hidden rounded-2xl p-0 ${
                                 isRoot
-                                    ? "cursor-default ring-2 ring-yellow"
+                                    ? "cursor-default ring-2 ring-purple"
                                     : "cursor-pointer ring-1 ring-ink/15 hover:ring-ink/60"
                             }`}
                             style={{ width: size, height: size, opacity: 0 }}

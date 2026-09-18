@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { Dropdown } from "~/components/Dropdown";
 
 export type FeedView = "masonry" | "ambient";
 
@@ -38,15 +39,9 @@ export function useFeedView(): [FeedView, (v: FeedView) => void] {
     return [view, change];
 }
 
-// Same plain-text recipe as the masthead nav and FeedModeSwitch - no fill,
-// no border.
-const PILL =
-    "px-2 py-[0.2rem] text-[length:var(--step--1)] transition-colors";
-
 /**
- * The floating Masonry|Ambient switch, top-right under the masthead. "Masonry"
- * is the scrolling image grid; "Ambient" replaces it with the crossfading
- * collage (components/AmbientCollage.tsx).
+ * The Masonry|Ambient switch on a channel page, rendered inline next to the
+ * channel header (see channels/Channel.tsx). Same Dropdown as FeedModeSwitch.
  */
 export function FeedSettings({
     view,
@@ -56,22 +51,6 @@ export function FeedSettings({
     onChange: (v: FeedView) => void;
 }) {
     return (
-        <div className="fixed right-4 top-[4.25rem] z-[120] flex items-center gap-[0.35rem] sm:right-8">
-            {OPTIONS.map((opt) => (
-                <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => onChange(opt.value)}
-                    aria-pressed={view === opt.value}
-                    className={`${PILL} ${
-                        view === opt.value
-                            ? "text-link underline"
-                            : "text-ink hover:underline"
-                    }`}
-                >
-                    {opt.label}
-                </button>
-            ))}
-        </div>
+        <Dropdown value={view} ariaLabel="Feed view" options={OPTIONS} onChange={onChange} />
     );
 }

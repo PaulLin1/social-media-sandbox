@@ -21,11 +21,10 @@ export default function About() {
             <div className="mt-4 flex flex-col gap-8 sm:flex-row sm:items-start sm:gap-12">
                 <div className="max-w-xl space-y-4 text-sm text-ink-soft">
                     <p>
-                        {SITE_NAME} is my personal sandbox for image-feed and
-                        visual-discovery UI. It's a place to try out different
+                        {SITE_NAME} is my personal sandbox for feed and
+                        discovery UI for social media. It's a place where I try out different
                         ways of browsing the same collection of photos and see
-                        how each one actually feels to use, rather than just
-                        reason about it.
+                        how each one actually feels to use.
                     </p>
                     <p>
                         The collection of images is based off images pulled from
@@ -39,24 +38,28 @@ export default function About() {
                             are.na
                         </a>{" "}
                         channels. Every image is embedded with CLIP and indexed
-                        in Postgres with pgvector, the same embedding space
-                        powers both the Dynamic Graph feed and Magic Search.
+                        in Postgres with pgvector. That is the only modification I
+                        allowed myself to give to the are.na data. This restriction allows
+                        me to reason about how to make presentation richer without forcing
+                        the user to add more to their posts.
                     </p>
                     <p>
-                        The feed is the core of of any social media platform.
-                        Masonry, Ambient, and Dynamic Graph are the same data
-                        shown three different ways, one switch away from each
-                        other on purpose so the differences are visible. It's
-                        built to keep growing: new browsing or discovery
-                        experiments get added to that switch over time.
+                        The feed is the core of any social media platform.
+                        Masonry and Ambient are the same data shown two
+                        different ways, one switch away from each other on
+                        purpose so the differences are visible. Dynamic Graph
+                        is a third way to browse the same collection, reached
+                        from Search instead of that switch. It's built to keep
+                        growing: new browsing or discovery experiments get
+                        added over time.
                     </p>
 
                     <p>
                         The social-media framing is a starting point, not the
-                        endpoint. This project was first inspired by me 
-                        learning a lot about Silk. In a podcast, Zane Kindness 
-                        talks about how Silk started off as a tool for curators 
-                        and only recently focused on becoming a social media 
+                        endpoint. This project was first inspired by me
+                        learning a lot about Silk. In a podcast, Zane Kindness
+                        talks about how Silk started off as a tool for curators
+                        and only recently focused on becoming a social media
                         platform. What these modes really are is tools for
                         thinking with a collection. The lineage goes back to
                         Vannevar Bush's 1945 Memex, a hypothetical desk that let
@@ -88,7 +91,7 @@ export default function About() {
 
                 <img
                     src="/memex-2857432598.png"
-                    alt="Illustration of Vannevar Bush's Memex, a desk-sized device for browsing associative trails between documents."
+                    alt="Memex"
                     className="w-full shrink-0 sm:w-[28rem] lg:w-[34rem]"
                 />
             </div>

@@ -21,7 +21,7 @@ export function Search({ query, rootId }: { query: string; rootId: number | null
     const noResults = query !== "" && rootId === null;
 
     return (
-        <main className="relative h-[calc(100dvh-4rem)] overflow-hidden sm:h-dvh">
+        <main className="relative h-[calc(100dvh-7.5rem)] overflow-hidden sm:h-dvh">
             {currentRoot != null ? (
                 <ExploreWeb rootId={currentRoot} onPick={setCurrentRoot} />
             ) : (

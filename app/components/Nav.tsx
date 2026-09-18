@@ -29,6 +29,17 @@ const mobileNavItems = [...mainNavItems, { name: "About", to: "/about", icon: In
 export function Nav() {
     return (
         <>
+            {/* Mobile only - the sidebar carries the wordmark on sm+, but
+                below that the sidebar is gone entirely and nothing else
+                shows it. Plain in-flow content (not fixed/sticky) so it just
+                sits above the page and scrolls away with it, same as the
+                old masthead used to. */}
+            <header className="flex h-14 shrink-0 items-center border-b border-rule bg-paper px-5 sm:hidden">
+                <Link to="/" className="text-base font-semibold text-ink">
+                    {SITE_NAME}
+                </Link>
+            </header>
+
             <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-rule bg-paper px-3 py-5 sm:flex">
                 <Link to="/" className="mb-5 px-3 text-base leading-snug font-semibold text-ink">
                     {SITE_NAME}
